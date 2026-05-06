@@ -1,0 +1,616 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Study Abroad — Dublin</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --parchment: #F4EFE4;
+      --green-dark: #1B3D2F;
+      --green-mid: #2E5E47;
+      --gold: #C8923A;
+      --gold-light: #E5A840;
+      --ink: #2A2016;
+      --ink-light: #5C4F3A;
+      --sage: #E2E8DF;
+      --water: #9BB8C9;
+      --paper: #FAF7F2;
+    }
+
+    body {
+      background: var(--parchment);
+      color: var(--ink);
+      font-family: 'DM Sans', sans-serif;
+      min-height: 100vh;
+      overflow-x: hidden;
+      max-width: 480px;
+      margin: 0 auto;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 999;
+    }
+
+    /* ── HEADER ── */
+    .header {
+      background: var(--green-dark);
+      padding: 32px 24px 24px;
+      position: relative;
+      overflow: hidden;
+    }
+    .header::before {
+      content: 'DUBLIN';
+      position: absolute;
+      right: -10px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-family: 'Playfair Display', serif;
+      font-size: 90px;
+      font-weight: 700;
+      color: rgba(255,255,255,0.04);
+      letter-spacing: 0.1em;
+      pointer-events: none;
+      user-select: none;
+    }
+    .header::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0; right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--gold), var(--gold-light), var(--gold));
+    }
+    .header-eyebrow {
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 8px;
+    }
+    .header-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 36px;
+      font-weight: 700;
+      color: var(--parchment);
+      line-height: 1.08;
+    }
+    .header-title em {
+      font-style: italic;
+      color: var(--gold-light);
+    }
+    .header-sub {
+      font-size: 11.5px;
+      color: rgba(244,239,228,0.45);
+      margin-top: 10px;
+      letter-spacing: 0.06em;
+    }
+
+    /* ── ACCORDION ── */
+    .section { border-bottom: 1px solid rgba(43,32,22,0.1); }
+
+    .section-header {
+      display: flex;
+      align-items: center;
+      gap: 13px;
+      padding: 16px 18px;
+      cursor: pointer;
+      user-select: none;
+      background: var(--paper);
+      transition: background 0.2s;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .section-header:hover { background: #F0EBE1; }
+    .section-header.active { background: var(--green-dark); }
+
+    .section-icon {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      background: var(--sage);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      flex-shrink: 0;
+      transition: background 0.2s;
+    }
+    .section-header.active .section-icon { background: var(--gold); }
+
+    .section-name {
+      font-family: 'Playfair Display', serif;
+      font-size: 17px;
+      font-weight: 600;
+      color: var(--ink);
+      flex: 1;
+      transition: color 0.2s;
+    }
+    .section-header.active .section-name { color: var(--parchment); }
+
+    .section-count {
+      font-size: 10.5px;
+      color: var(--ink-light);
+      background: var(--sage);
+      border-radius: 10px;
+      padding: 2px 8px;
+      transition: all 0.2s;
+      flex-shrink: 0;
+    }
+    .section-header.active .section-count {
+      background: rgba(200,146,58,0.2);
+      color: var(--gold-light);
+    }
+
+    .chevron {
+      width: 16px;
+      height: 16px;
+      flex-shrink: 0;
+      transition: transform 0.32s ease;
+      color: rgba(43,32,22,0.35);
+    }
+    .section-header.active .chevron {
+      transform: rotate(180deg);
+      color: var(--gold);
+    }
+
+    /* ── MAP PANEL ── */
+    .map-panel {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.45s cubic-bezier(0.4,0,0.2,1);
+    }
+    .map-panel.open { max-height: 560px; }
+
+    .map-container {
+      background: var(--sage);
+      padding: 14px 14px 10px;
+    }
+
+    .map-hint {
+      font-size: 10px;
+      color: var(--ink-light);
+      text-align: center;
+      padding-bottom: 10px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      opacity: 0.7;
+    }
+
+    .dublin-map {
+      width: 100%;
+      max-width: 420px;
+      display: block;
+      margin: 0 auto;
+      border-radius: 6px;
+      overflow: hidden;
+      box-shadow: 0 2px 12px rgba(43,32,22,0.12);
+    }
+
+    /* ── MAP DOTS ── */
+    .map-dot { cursor: pointer; }
+    .map-dot:hover .dot-outer { opacity: 0.45; }
+    .map-dot:hover .dot-inner { r: 7; }
+
+    .dot-outer { fill: var(--gold); opacity: 0.22; transition: opacity 0.2s; }
+    .dot-inner { fill: var(--gold); r: 5; transition: r 0.2s; }
+    .dot-ring { fill: none; stroke: var(--gold); stroke-width: 1.5; }
+
+    .dot-pulse {
+      fill: none;
+      stroke: var(--gold);
+      stroke-width: 1.2;
+      r: 5;
+      animation: dotpulse 2.2s ease-out infinite;
+    }
+    @keyframes dotpulse {
+      0%   { r: 5;  opacity: 0.75; }
+      100% { r: 20; opacity: 0; }
+    }
+
+    .dot-label {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 8.5px;
+      fill: var(--ink);
+      font-weight: 500;
+      pointer-events: none;
+    }
+
+    /* ── OVERLAY ── */
+    .overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(27,61,47,0.52);
+      z-index: 200;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s;
+      backdrop-filter: blur(3px);
+    }
+    .overlay.visible { opacity: 1; pointer-events: all; }
+
+    /* ── BOTTOM SHEET ── */
+    .bottom-sheet {
+      position: fixed;
+      bottom: 0; left: 50%; 
+      width: 100%;
+      max-width: 480px;
+      transform: translateX(-50%) translateY(100%);
+      background: var(--paper);
+      border-radius: 20px 20px 0 0;
+      z-index: 201;
+      transition: transform 0.42s cubic-bezier(0.32,0.72,0,1);
+      max-height: 82vh;
+      overflow-y: auto;
+    }
+    .bottom-sheet.open { transform: translateX(-50%) translateY(0); }
+
+    .sheet-inner { position: relative; }
+
+    .sheet-handle {
+      width: 40px;
+      height: 4px;
+      background: rgba(43,32,22,0.14);
+      border-radius: 2px;
+      margin: 13px auto 0;
+    }
+
+    .sheet-photo {
+      margin: 14px 18px 0;
+      height: 190px;
+      border-radius: 14px;
+      overflow: hidden;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .photo-emoji { font-size: 46px; }
+    .photo-label {
+      font-size: 10px;
+      color: rgba(255,255,255,0.6);
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      font-weight: 500;
+    }
+
+    .sheet-content { padding: 16px 20px 36px; }
+
+    .sheet-category {
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 5px;
+    }
+    .sheet-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 23px;
+      font-weight: 700;
+      color: var(--ink);
+      margin-bottom: 12px;
+      line-height: 1.15;
+    }
+    .sheet-text {
+      font-size: 14px;
+      line-height: 1.72;
+      color: var(--ink-light);
+    }
+
+    .sheet-close {
+      position: absolute;
+      top: 14px;
+      right: 16px;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: var(--sage);
+      border: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 13px;
+      color: var(--ink-light);
+      transition: background 0.18s;
+    }
+    .sheet-close:hover { background: #d5d8d0; }
+  </style>
+</head>
+<body>
+
+  <div class="header">
+    <div class="header-eyebrow">University of Michigan · Fall 2025</div>
+    <h1 class="header-title">Study Abroad<br><em>Dublin</em></h1>
+    <p class="header-sub">Tap a dot on any map to explore ↓</p>
+  </div>
+
+  <div id="accordion"></div>
+
+  <div class="overlay" id="overlay" onclick="closeSheet()"></div>
+
+  <div class="bottom-sheet" id="bottomSheet">
+    <div class="sheet-inner">
+      <div class="sheet-handle"></div>
+      <button class="sheet-close" onclick="closeSheet()">✕</button>
+      <div class="sheet-photo" id="sheetPhoto"></div>
+      <div class="sheet-content">
+        <div class="sheet-category" id="sheetCategory"></div>
+        <h2 class="sheet-title" id="sheetTitle"></h2>
+        <p class="sheet-text" id="sheetText"></p>
+      </div>
+    </div>
+  </div>
+
+<script>
+const SECTIONS = [
+  {
+    id: 'class-trips',
+    name: 'Class Trips',
+    icon: '🎓',
+    dots: [
+      { cx:200, cy:262, name:'Trinity College Dublin', short:'Trinity',
+        desc:'Home to the legendary Book of Kells, Trinity College was a weekly field trip destination. Walking through the cobblestone Front Square felt like stepping back 400 years — and the Long Room library genuinely takes your breath away.',
+        emoji:'📚', bg:'linear-gradient(135deg,#2d5016,#4a7c2f)' },
+      { cx:195, cy:279, name:'National Museum of Ireland', short:'Nat\'l Museum',
+        desc:'We spent an entire afternoon among Celtic gold artifacts and Iron Age bog bodies. The Ardagh Chalice and Tara Brooch stopped everyone in their tracks — Irish craftsmanship from over 1,000 years ago.',
+        emoji:'🏺', bg:'linear-gradient(135deg,#3d2b1a,#7a5230)' },
+      { cx:162, cy:261, name:'Chester Beatty Library', short:'Chester Beatty',
+        desc:'Consistently ranked one of Europe\'s best museums. Our class visited for a module on rare manuscripts — illuminated texts, ancient papyri, and intricate Japanese scroll paintings all under one roof.',
+        emoji:'📖', bg:'linear-gradient(135deg,#1a2d3d,#2e5470)' },
+      { cx:112, cy:253, name:'IMMA — Irish Museum of Modern Art', short:'IMMA',
+        desc:'Set in the baroque Royal Hospital Kilmainham, IMMA makes contemporary art feel more radical by contrast. Our art history module brought us here twice and I still didn\'t see everything.',
+        emoji:'🎨', bg:'linear-gradient(135deg,#2d1a3d,#5a3070)' },
+    ]
+  },
+  {
+    id: 'pubs-food',
+    name: 'Pubs & Food',
+    icon: '🍺',
+    dots: [
+      { cx:172, cy:246, name:'Temple Bar Area', short:'Temple Bar',
+        desc:'The touristy heart of Dublin — but absolutely worth it for the atmosphere on a weekend night. Cobblestone streets, live trad music spilling out of every doorway, and the best people-watching in the city.',
+        emoji:'🎵', bg:'linear-gradient(135deg,#7a2020,#c44040)' },
+      { cx:156, cy:254, name:'The Brazen Head', short:'Brazen Head',
+        desc:'Ireland\'s oldest pub (est. 1198). We stumbled in on a Tuesday and stayed three hours listening to a session. Order the lamb stew and a Guinness — you won\'t regret it.',
+        emoji:'🍺', bg:'linear-gradient(135deg,#4a3010,#8a6020)' },
+      { cx:200, cy:271, name:'Kehoe\'s', short:'Kehoe\'s',
+        desc:'A Victorian gem on South Anne Street. Cramped, wood-paneled, and completely perfect. This became our unofficial Thursday night spot — the Guinness here is consistently excellent.',
+        emoji:'🥃', bg:'linear-gradient(135deg,#1a3d1a,#2e6e2e)' },
+      { cx:210, cy:248, name:'Mulligan\'s', short:'Mulligan\'s',
+        desc:'Locals swear this pours the best pint in Dublin. We made a pilgrimage in week two. Old-school, no-frills, completely authentic. Sitting next to regulars who\'ve been coming for 30 years is its own kind of education.',
+        emoji:'🍻', bg:'linear-gradient(135deg,#3d2010,#6e4020)' },
+      { cx:188, cy:267, name:'Full Irish Breakfast', short:'Full Irish',
+        desc:'The full Irish breakfast — rashers, black pudding, white pudding, eggs, and soda bread — sorted out many a rough Sunday morning. Honest to Goodness off Grafton St became my regular recovery spot.',
+        emoji:'🍳', bg:'linear-gradient(135deg,#3d3010,#7a6020)' },
+    ]
+  },
+  {
+    id: 'weekend-trips',
+    name: 'Weekend Trips',
+    icon: '🚌',
+    dots: [
+      { cx:338, cy:188, name:'Howth', short:'Howth',
+        desc:'Just 30 minutes by DART. We hiked the cliff path on a crisp October morning with views stretching back across Dublin Bay. Finished with fresh fish and chips on the harbour — a perfect day.',
+        emoji:'⛰️', bg:'linear-gradient(135deg,#1a3d3a,#2e7070)' },
+      { cx:308, cy:162, name:'Malahide', short:'Malahide',
+        desc:'A charming coastal village north of Dublin. Malahide Castle and its grounds were the main draw, but we ended up spending most of the afternoon in the little cafés along the estuary walk.',
+        emoji:'🏰', bg:'linear-gradient(135deg,#2d1a3d,#5a3d6e)' },
+      { cx:260, cy:382, name:'Wicklow Town', short:'Wicklow',
+        desc:'Gateway to the "Garden of Ireland." The drive past the Sugar Loaf mountain was stunning. We visited the ruins of the Black Castle by the sea, walked the town, then pushed into the hills.',
+        emoji:'🌿', bg:'linear-gradient(135deg,#1a3d20,#2e6e40)' },
+      { cx:240, cy:432, name:'Glendalough', short:'Glendalough',
+        desc:'The monastic valley — two glacier lakes surrounded by forested hills and a 1,000-year-old round tower. Absolutely otherworldly. Went twice. Would go every single weekend if I could.',
+        emoji:'🏔️', bg:'linear-gradient(135deg,#1a2d1a,#3a5a3a)' },
+    ]
+  },
+  {
+    id: 'highlights',
+    name: 'Highlights',
+    icon: '⭐',
+    dots: [
+      { cx:180, cy:240, name:'Ha\'penny Bridge', short:'Ha\'penny',
+        desc:'Cast iron, over 200 years old, arching the Liffey in one graceful span. I crossed it probably 200 times and it never got old. At night with the city lights reflecting in the river — one of my favorite sights anywhere.',
+        emoji:'🌉', bg:'linear-gradient(135deg,#1a2d3d,#2e5a7a)' },
+      { cx:176, cy:273, name:'St. Patrick\'s Cathedral', short:'St. Patrick\'s',
+        desc:'Jonathan Swift is buried here. Standing in the cathedral where he preached felt surreal for a literature student. The medieval stonework and the flags of old Irish regiments hanging from the ceiling are genuinely haunting.',
+        emoji:'⛪', bg:'linear-gradient(135deg,#2d2d1a,#5a5a30)' },
+      { cx:107, cy:218, name:'Phoenix Park', short:'Phoenix Park',
+        desc:'At 1,750 acres, bigger than Central Park. We jogged past actual deer grazing by the road. The American Ambassador\'s residence and the Irish President\'s home are both inside. A surreal, beautiful space.',
+        emoji:'🦌', bg:'linear-gradient(135deg,#1a3d1a,#347a34)' },
+      { cx:196, cy:268, name:'Grafton Street', short:'Grafton St.',
+        desc:'The pedestrian spine of Dublin — buskers, street art, flower sellers, every kind of person. I ate a crepe from a cart here on my first day and it felt like the city welcoming me. Came back almost daily.',
+        emoji:'🎶', bg:'linear-gradient(135deg,#3d1a1a,#7a3434)' },
+      { cx:212, cy:296, name:'Iveagh Gardens', short:'Iveagh Gardens',
+        desc:'Dublin\'s secret garden — most tourists never find it. Tucked behind the National Concert Hall, with a waterfall, maze hedges, and perfectly placed benches. The best spot to read between classes.',
+        emoji:'🌸', bg:'linear-gradient(135deg,#2d3d1a,#5a7a34)' },
+    ]
+  },
+  {
+    id: 'misc',
+    name: 'Misc.',
+    icon: '📍',
+    dots: [
+      { cx:238, cy:142, name:'Dublin Airport', short:'Airport',
+        desc:'The beginning and end of everything. Arriving in September in the early morning fog with a full backpack and zero idea what the next four months would hold. Leaving in December with whiskey, soda bread mix, and a head full of memories.',
+        emoji:'✈️', bg:'linear-gradient(135deg,#1a1a3d,#30306e)' },
+      { cx:293, cy:352, name:'Dún Laoghaire', short:'Dún Laoghaire',
+        desc:'A Victorian seaside town with one of the longest piers in Europe. Walking the full East Pier in a stormy November, waves crashing over the walls — that was the day Dublin started to feel like home.',
+        emoji:'🌊', bg:'linear-gradient(135deg,#1a2d3d,#2e506e)' },
+      { cx:222, cy:305, name:'Portobello / Ranelagh', short:'My Neighborhood',
+        desc:'Waking up to the Grand Canal every morning, grabbing coffee from Kaph on Drury Street, walking to campus through streets that feel like another century. My neighborhood. I loved living here.',
+        emoji:'🏠', bg:'linear-gradient(135deg,#3d2d1a,#7a5a34)' },
+    ]
+  },
+];
+
+function buildMap(section) {
+  const dots = section.dots.map((dot, i) => {
+    const labelX = dot.cx + 12;
+    const labelY = dot.cy + 4;
+    const delay = i * 0.28;
+    return `
+      <g class="map-dot" onclick="openSheet('${section.id}',${i})">
+        <circle class="dot-pulse" cx="${dot.cx}" cy="${dot.cy}" style="animation-delay:${delay}s"/>
+        <circle class="dot-outer" cx="${dot.cx}" cy="${dot.cy}" r="9"/>
+        <circle class="dot-inner" cx="${dot.cx}" cy="${dot.cy}"/>
+        <text class="dot-label" x="${labelX}" y="${labelY}">${dot.short}</text>
+      </g>`;
+  }).join('');
+
+  return `
+    <svg class="dublin-map" viewBox="0 0 420 480" xmlns="http://www.w3.org/2000/svg">
+      <!-- Background -->
+      <rect width="420" height="480" fill="#E0E7DC" rx="6"/>
+
+      <!-- Dublin Bay -->
+      <path d="M338,95 Q392,148 400,250 Q392,345 328,388 L298,398 L283,368
+               Q308,342 313,250 Q308,152 283,118 Z"
+            fill="#9BB8C9" opacity="0.42"/>
+      <!-- Bay texture -->
+      <path d="M352,178 Q372,183 387,178" stroke="#7aa5ba" stroke-width="0.9" fill="none" opacity="0.55"/>
+      <path d="M357,200 Q378,205 392,200" stroke="#7aa5ba" stroke-width="0.9" fill="none" opacity="0.55"/>
+      <path d="M361,222 Q383,227 396,220" stroke="#7aa5ba" stroke-width="0.9" fill="none" opacity="0.55"/>
+      <path d="M360,244 Q382,249 395,242" stroke="#7aa5ba" stroke-width="0.9" fill="none" opacity="0.55"/>
+      <path d="M357,265 Q378,270 392,263" stroke="#7aa5ba" stroke-width="0.9" fill="none" opacity="0.5"/>
+      <path d="M352,285 Q372,290 384,283" stroke="#7aa5ba" stroke-width="0.9" fill="none" opacity="0.45"/>
+      <path d="M344,305 Q362,310 374,303" stroke="#7aa5ba" stroke-width="0.9" fill="none" opacity="0.4"/>
+
+      <!-- Howth Peninsula -->
+      <path d="M292,150 Q325,126 362,142 Q380,154 376,174
+               Q360,190 332,194 Q306,190 292,174 Z"
+            fill="#c8d4c2" opacity="0.65"/>
+      <text font-family="DM Sans,sans-serif" font-size="7" fill="#4a6a40"
+            text-anchor="middle" x="335" y="165" opacity="0.6">Howth</text>
+
+      <!-- River Liffey -->
+      <path d="M38,238 C80,234 120,236 160,238 C185,240 200,237 222,238
+               C252,240 272,241 296,237"
+            stroke="#9BB8C9" stroke-width="5.5" fill="none" stroke-linecap="round"/>
+      <path d="M38,238 C80,234 120,236 160,238 C185,240 200,237 222,238
+               C252,240 272,241 296,237"
+            stroke="#c0d5e4" stroke-width="2" fill="none" stroke-linecap="round"/>
+
+      <!-- Grand Canal -->
+      <path d="M38,312 C80,307 132,302 177,300 C212,298 257,299 296,296"
+            stroke="#9BB8C9" stroke-width="2.2" fill="none" stroke-linecap="round" opacity="0.55"/>
+      <!-- Royal Canal -->
+      <path d="M38,174 C82,171 132,170 182,172 C212,173 252,172 286,168"
+            stroke="#9BB8C9" stroke-width="2.2" fill="none" stroke-linecap="round" opacity="0.55"/>
+
+      <!-- Phoenix Park -->
+      <ellipse cx="108" cy="218" rx="40" ry="25" fill="#7BA05B" opacity="0.28"/>
+      <ellipse cx="108" cy="218" rx="40" ry="25" fill="none" stroke="#5a7a40"
+               stroke-width="1" opacity="0.38"/>
+      <text font-family="DM Sans,sans-serif" font-size="7" fill="#3a5a28"
+            text-anchor="middle" x="108" y="221" opacity="0.65">Phoenix Park</text>
+
+      <!-- St Stephen's Green -->
+      <rect x="187" y="277" width="18" height="13" rx="2.5"
+            fill="#7BA05B" opacity="0.32"/>
+      <rect x="187" y="277" width="18" height="13" rx="2.5"
+            fill="none" stroke="#5a7a40" stroke-width="0.8" opacity="0.38"/>
+
+      <!-- City grid -->
+      <line x1="200" y1="194" x2="200" y2="242" stroke="#bbb4a8" stroke-width="2.5"/>
+      <line x1="196" y1="242" x2="196" y2="292" stroke="#bbb4a8" stroke-width="1.8"/>
+      <line x1="78" y1="242" x2="296" y2="238" stroke="#bbb4a8" stroke-width="1.2" opacity="0.5"/>
+      <line x1="100" y1="260" x2="280" y2="258" stroke="#bbb4a8" stroke-width="1" opacity="0.38"/>
+      <line x1="110" y1="276" x2="272" y2="274" stroke="#bbb4a8" stroke-width="0.9" opacity="0.3"/>
+      <line x1="154" y1="220" x2="154" y2="282" stroke="#bbb4a8" stroke-width="0.9" opacity="0.38"/>
+      <line x1="170" y1="220" x2="170" y2="280" stroke="#bbb4a8" stroke-width="0.8" opacity="0.32"/>
+      <line x1="220" y1="220" x2="220" y2="282" stroke="#bbb4a8" stroke-width="0.8" opacity="0.32"/>
+      <line x1="236" y1="222" x2="236" y2="286" stroke="#bbb4a8" stroke-width="0.8" opacity="0.28"/>
+
+      <!-- Dublin watermark -->
+      <text font-family="Playfair Display,serif" font-size="14" fill="#2A2016"
+            opacity="0.12" text-anchor="middle" x="195" y="338" font-style="italic">Dublin</text>
+
+      <!-- Compass -->
+      <g transform="translate(372,440)" opacity="0.42">
+        <circle r="13" fill="#cdd8c4" stroke="#8aaa7a" stroke-width="0.9"/>
+        <line x1="0" y1="-9.5" x2="0" y2="9.5" stroke="#4a6a30" stroke-width="1.3"/>
+        <line x1="-9.5" y1="0" x2="9.5" y2="0" stroke="#4a6a30" stroke-width="1.3"/>
+        <text font-family="DM Sans" font-size="7.5" fill="#3a5a28"
+              text-anchor="middle" y="-12">N</text>
+      </g>
+
+      <!-- Scale bar -->
+      <g transform="translate(20,458)" opacity="0.45">
+        <line x1="0" y1="0" x2="44" y2="0" stroke="#4a5a40" stroke-width="1.6"/>
+        <line x1="0" y1="-3.5" x2="0" y2="3.5" stroke="#4a5a40" stroke-width="1.6"/>
+        <line x1="44" y1="-3.5" x2="44" y2="3.5" stroke="#4a5a40" stroke-width="1.6"/>
+        <text font-family="DM Sans" font-size="7.5" fill="#3a5040"
+              x="22" y="-6" text-anchor="middle">2 km</text>
+      </g>
+
+      ${dots}
+    </svg>`;
+}
+
+function buildAccordion() {
+  const el = document.getElementById('accordion');
+  el.innerHTML = SECTIONS.map((section, idx) => `
+    <div class="section" id="sec-${section.id}">
+      <div class="section-header${idx===3?' active':''}" onclick="toggleSection('${section.id}')">
+        <div class="section-icon">${section.icon}</div>
+        <span class="section-name">${section.name}</span>
+        <span class="section-count">${section.dots.length} spots</span>
+        <svg class="chevron" viewBox="0 0 24 24" fill="none"
+             stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+          <polyline points="6,9 12,15 18,9"/>
+        </svg>
+      </div>
+      <div class="map-panel${idx===3?' open':''}" id="panel-${section.id}">
+        <div class="map-container">
+          <div class="map-hint">tap a dot to explore</div>
+          ${buildMap(section)}
+        </div>
+      </div>
+    </div>`).join('');
+}
+
+function toggleSection(id) {
+  SECTIONS.forEach(s => {
+    const hdr = document.querySelector(`#sec-${s.id} .section-header`);
+    const panel = document.getElementById(`panel-${s.id}`);
+    const opening = s.id === id && !panel.classList.contains('open');
+    panel.classList.toggle('open', s.id === id ? opening : false);
+    hdr.classList.toggle('active', s.id === id ? opening : false);
+  });
+}
+
+function openSheet(sectionId, dotIdx) {
+  const section = SECTIONS.find(s => s.id === sectionId);
+  const dot = section.dots[dotIdx];
+  document.getElementById('sheetCategory').textContent = section.name;
+  document.getElementById('sheetTitle').textContent = dot.name;
+  document.getElementById('sheetText').textContent = dot.desc;
+  const photo = document.getElementById('sheetPhoto');
+  photo.style.background = dot.bg;
+  photo.innerHTML = `<span class="photo-emoji">${dot.emoji}</span>
+                     <span class="photo-label">Add photo here</span>`;
+  document.getElementById('overlay').classList.add('visible');
+  document.getElementById('bottomSheet').classList.add('open');
+}
+
+function closeSheet() {
+  document.getElementById('overlay').classList.remove('visible');
+  document.getElementById('bottomSheet').classList.remove('open');
+}
+
+buildAccordion();
+</script>
+</body>
+</html>
